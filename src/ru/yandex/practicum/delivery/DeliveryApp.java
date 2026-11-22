@@ -9,6 +9,10 @@ public class DeliveryApp {
     private static final Scanner scanner = new Scanner(System.in);
     private static List<Parcel> allParcels = new ArrayList<>();
     private static List<Trackable> allTrackableParcels = new ArrayList<>();
+    private static final double MAX_WEIGHT_FOR_BOX = 100;
+    private static ParcelBox<StandardParcel> standardParcelsBox = new ParcelBox<>(MAX_WEIGHT_FOR_BOX);
+    private static ParcelBox<PerishableParcel> perishableParcelsBox = new ParcelBox<>(MAX_WEIGHT_FOR_BOX);
+    private static ParcelBox<FragileParcel> fragileParcelsBox = new ParcelBox<>(MAX_WEIGHT_FOR_BOX);
 
     public static void main(String[] args) {
         boolean running = true;
@@ -29,6 +33,23 @@ public class DeliveryApp {
                 case 4:
                     trackParcels();
                     break;
+                case 5:
+                    showParcelTypes();
+                    int typeChoice = Integer.parseInt(scanner.nextLine());
+                    switch (typeChoice) {
+                        case 1:
+                            showBoxContent(standardParcelsBox);
+                            break;
+                        case 2:
+                            showBoxContent(perishableParcelsBox);
+                            break;
+                        case 3:
+                            showBoxContent(fragileParcelsBox);
+                            break;
+                        default:
+                            System.out.println("Выбран неправильный тип посылки.");
+                    }
+                    break;
                 case 0:
                     running = false;
                     break;
@@ -44,7 +65,15 @@ public class DeliveryApp {
         System.out.println("2 — Отправить все посылки");
         System.out.println("3 — Посчитать стоимость доставки");
         System.out.println("4 — Отследить хрупкие посылки");
+        System.out.println("5 — Показать содержимое коробки");
         System.out.println("0 — Завершить");
+    }
+
+    private static void showParcelTypes() {
+        System.out.println("Выберите тип посылки:");
+        System.out.println("1 — Стандартная посылка.");
+        System.out.println("2 — Скоропортящаяся посылка.");
+        System.out.println("3 — Хрупкая посылка.");
     }
 
     private static void addParcel() {
@@ -58,29 +87,32 @@ public class DeliveryApp {
         System.out.println("Введите день отправки посылки:");
         byte sendDay = scanner.nextByte();
 
-        System.out.println("Выберите тип посылки:");
-        System.out.println("1 — Стандартная посылка.");
-        System.out.println("2 — Скоропортящаяся посылка.");
-        System.out.println("3 — Хрупкая посылка");
+        showParcelTypes();
         int choice = scanner.nextInt();
         scanner.nextLine();
 
         switch (choice) {
             case 1:
-                allParcels.add(new StandardParcel(description, weight, deliveryAddress, sendDay));
+                StandardParcel standardParcel = new StandardParcel(description, weight, deliveryAddress, sendDay);
+                allParcels.add(standardParcel);
+                standardParcelsBox.addParcel(standardParcel);
                 break;
             case 2:
                 System.out.println("Введите срок годности посылки:");
                 byte timeToLive = scanner.nextByte();
                 scanner.nextLine();
-                allParcels.add(new PerishableParcel(description, weight, deliveryAddress, sendDay,
-                        timeToLive));
+                PerishableParcel perishableParcel = new PerishableParcel(description, weight, deliveryAddress, sendDay,
+                        timeToLive);
+                allParcels.add(perishableParcel);
+                perishableParcelsBox.addParcel(perishableParcel);
                 break;
             case 3:
-                allTrackableParcels.add(new FragileParcel(description, weight, deliveryAddress, sendDay));
+                FragileParcel fragileParcel = new FragileParcel(description, weight, deliveryAddress, sendDay);
+                allTrackableParcels.add(fragileParcel);
+                fragileParcelsBox.addParcel(fragileParcel);
                 break;
             default:
-                System.out.println("Выбрали неверный тип посылки. Попробуйте ещё раз.");
+                System.out.println("Выбрали неверный тип посылки.");
         }
     }
 
@@ -107,11 +139,24 @@ public class DeliveryApp {
     }
 
     private static void trackParcels() {
+        if (allTrackableParcels.isEmpty()) {
+            System.out.println("Список хрупких посылок пуст.");
+        }
         for (Trackable trackableParcel : allTrackableParcels) {
             System.out.println("Введите новое местоположение для посылки "
                     + ((Parcel) trackableParcel).getDescription() + ":");
             String newLocation = scanner.nextLine();
             trackableParcel.reportStatus(newLocation);
+        }
+    }
+
+    private static void showBoxContent(ParcelBox<? extends Parcel> box) {
+        if (box.getAllParcels().isEmpty()) {
+            System.out.println("Коробка пуста.");
+            return;
+        }
+        for (Parcel parcel : box.getAllParcels()) {
+            System.out.println(parcel.getDescription());
         }
     }
 
