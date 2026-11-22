@@ -5,7 +5,7 @@ public class PerishableParcel extends Parcel{
     private final byte timeToLive;
     public static final int BASE_DELIVERY_COST = 3;
 
-    public PerishableParcel(String description, double weight, String deliveryAddress, byte sendDay,
+    public PerishableParcel(String description, int weight, String deliveryAddress, byte sendDay,
                           byte timeToLive) {
         super(description, weight, deliveryAddress, sendDay);
         this.timeToLive = timeToLive;

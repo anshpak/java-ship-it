@@ -9,7 +9,7 @@ public class DeliveryApp {
     private static final Scanner scanner = new Scanner(System.in);
     private static List<Parcel> allParcels = new ArrayList<>();
     private static List<Trackable> allTrackableParcels = new ArrayList<>();
-    private static final double MAX_PARCELS_WEIGHT_FOR_BOX = 100;
+    private static final int MAX_PARCELS_WEIGHT_FOR_BOX = 100;
     private static ParcelBox<StandardParcel> standardParcelsBox = new ParcelBox<>(MAX_PARCELS_WEIGHT_FOR_BOX);
     private static ParcelBox<PerishableParcel> perishableParcelsBox = new ParcelBox<>(MAX_PARCELS_WEIGHT_FOR_BOX);
     private static ParcelBox<FragileParcel> fragileParcelsBox = new ParcelBox<>(MAX_PARCELS_WEIGHT_FOR_BOX);
@@ -80,41 +80,42 @@ public class DeliveryApp {
         System.out.println("Введите описание посылки:");
         String description = scanner.nextLine();
         System.out.println("Введите вес посылки:");
-        double weight = scanner.nextDouble();
+        int weight = Integer.parseInt(scanner.nextLine());
         if (weight <= 0) {
             System.out.println("Вес должен быть положительным.");
             System.out.println("Посылка " + description + " добавлена не будет .");
             return;
         }
         System.out.println("Введите адрес посылки:");
-        scanner.nextLine();
         String deliveryAddress = scanner.nextLine();
         System.out.println("Введите день отправки посылки:");
-        byte sendDay = scanner.nextByte();
+        byte sendDay = Byte.parseByte(scanner.nextLine());
 
         showParcelTypes();
-        int choice = scanner.nextInt();
-        scanner.nextLine();
+        int choice = Integer.parseInt(scanner.nextLine());
 
         switch (choice) {
             case 1:
                 StandardParcel standardParcel = new StandardParcel(description, weight, deliveryAddress, sendDay);
-                allParcels.add(standardParcel);
-                standardParcelsBox.addParcel(standardParcel);
+                if (standardParcelsBox.addParcel(standardParcel)) {
+                    allParcels.add(standardParcel);
+                }
                 break;
             case 2:
                 System.out.println("Введите срок годности посылки:");
-                byte timeToLive = scanner.nextByte();
-                scanner.nextLine();
+                byte timeToLive = Byte.parseByte(scanner.nextLine());
                 PerishableParcel perishableParcel = new PerishableParcel(description, weight, deliveryAddress, sendDay,
                         timeToLive);
-                allParcels.add(perishableParcel);
-                perishableParcelsBox.addParcel(perishableParcel);
+                if (perishableParcelsBox.addParcel(perishableParcel)) {
+                    allParcels.add(perishableParcel);
+                }
                 break;
             case 3:
                 FragileParcel fragileParcel = new FragileParcel(description, weight, deliveryAddress, sendDay);
-                allTrackableParcels.add(fragileParcel);
-                fragileParcelsBox.addParcel(fragileParcel);
+                if (fragileParcelsBox.addParcel(fragileParcel)) {
+                    allTrackableParcels.add(fragileParcel);
+                    allParcels.add(fragileParcel);
+                }
                 break;
             default:
                 System.out.println("Выбрали неверный тип посылки.");
@@ -126,19 +127,12 @@ public class DeliveryApp {
             parcel.packageItem();
             parcel.deliver();
         }
-        for (Trackable trackableParcel : allTrackableParcels) {
-            ((Parcel)trackableParcel).packageItem();
-            ((Parcel)trackableParcel).deliver();
-        }
     }
 
     private static void calculateCosts() {
-        double sum = 0;
+        int sum = 0;
         for (Parcel parcel : allParcels) {
             sum += parcel.calculateDeliveryCost();
-        }
-        for (Trackable trackableParcel : allTrackableParcels) {
-            sum += ((Parcel)trackableParcel).calculateDeliveryCost();
         }
         System.out.println("Общая стоимость всех доставок: " + sum + ".");
     }

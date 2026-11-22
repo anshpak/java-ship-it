@@ -4,7 +4,7 @@ public class StandardParcel extends Parcel{
 
     public static final int BASE_DELIVERY_COST = 2;
 
-    public StandardParcel(String description, double weight, String deliveryAddress, byte sendDay) {
+    public StandardParcel(String description, int weight, String deliveryAddress, byte sendDay) {
         super(description, weight, deliveryAddress, sendDay);
     }
 

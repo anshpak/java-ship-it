@@ -3,12 +3,12 @@ package ru.yandex.practicum.delivery;
 public abstract class Parcel {
 
     private final String description;
-    private final double weight;
+    private final int weight;
     private final String deliveryAddress;
     // byte, т. к. по условию посылки доставляются в том же месяце.
     private final byte sendDay;
 
-    public Parcel(String description, double weight, String deliveryAddress, byte sendDay) {
+    public Parcel(String description, int weight, String deliveryAddress, byte sendDay) {
         this.description = description;
         this.weight = weight;
         this.deliveryAddress = deliveryAddress;
@@ -19,7 +19,7 @@ public abstract class Parcel {
         return description;
     }
 
-    public double getWeight() {
+    public int getWeight() {
         return weight;
     }
 

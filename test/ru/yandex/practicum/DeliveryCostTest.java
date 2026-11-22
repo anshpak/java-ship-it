@@ -17,20 +17,20 @@ public class DeliveryCostTest {
             "г. Санкт-Петербург, Лиговский проспект, д. 150, кв. 5", (byte) 1);
     private final StandardParcel standardPaintParcel = new StandardParcel("Краска", 5,
             "г. Санкт-Петербург, Лиговский проспект, д. 150, кв. 5", (byte) 1);
-    private final StandardParcel standardWoodParcel = new StandardParcel("Дерево", 28.8,
+    private final StandardParcel standardWoodParcel = new StandardParcel("Дерево", 28,
             "г. Санкт-Петербург, Лиговский проспект, д. 150, кв. 5", (byte) 1);
 
-    private final PerishableParcel perishableParcel = new PerishableParcel("Творог", 1.25,
+    private final PerishableParcel perishableParcel = new PerishableParcel("Творог", 1,
             "г. Санкт-Петербург, ул. Рубинштейна, д. 24, кв. 17", (byte) 2, (byte) 10);
-    private final FragileParcel fragileParcel = new FragileParcel("Набор фарфоровых тарелок",3.75,
+    private final FragileParcel fragileParcel = new FragileParcel("Набор фарфоровых тарелок",3,
             "г. Санкт-Петербург, ул. Савушкина, д. 87, корп. 2, кв. 33", (byte) 3);
 
-    private final double MAX_PARCELS_WEIGHT_FOR_BOX = 40;
-    private ParcelBox<StandardParcel> box = new ParcelBox<>(MAX_PARCELS_WEIGHT_FOR_BOX);
+    private final int MAX_PARCELS_WEIGHT_FOR_BOX = 40;
+    private final ParcelBox<StandardParcel> box = new ParcelBox<>(MAX_PARCELS_WEIGHT_FOR_BOX);
 
     @BeforeEach
     public void beforeEach() {
-        box.getAllParcels().clear();
+        box.clear();
     }
 
     // Вычисление стоимости посылки для стандартного типа посылок.

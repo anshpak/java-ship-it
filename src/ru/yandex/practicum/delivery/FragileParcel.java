@@ -4,7 +4,7 @@ public class FragileParcel extends Parcel implements Trackable {
 
     public static final int BASE_DELIVERY_COST = 4;
 
-    public FragileParcel(String description, double weight, String deliveryAddress, byte sendDay) {
+    public FragileParcel(String description, int weight, String deliveryAddress, byte sendDay) {
         super(description, weight, deliveryAddress, sendDay);
     }
 
