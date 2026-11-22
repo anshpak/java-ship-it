@@ -8,6 +8,7 @@ public class DeliveryApp {
 
     private static final Scanner scanner = new Scanner(System.in);
     private static List<Parcel> allParcels = new ArrayList<>();
+    private static List<Trackable> allTrackableParcels = new ArrayList<>();
 
     public static void main(String[] args) {
         boolean running = true;
@@ -25,6 +26,9 @@ public class DeliveryApp {
                 case 3:
                     calculateCosts();
                     break;
+                case 4:
+                    trackParcels();
+                    break;
                 case 0:
                     running = false;
                     break;
@@ -39,6 +43,7 @@ public class DeliveryApp {
         System.out.println("1 — Добавить посылку");
         System.out.println("2 — Отправить все посылки");
         System.out.println("3 — Посчитать стоимость доставки");
+        System.out.println("4 — Отследить хрупкие посылки");
         System.out.println("0 — Завершить");
     }
 
@@ -72,7 +77,7 @@ public class DeliveryApp {
                         timeToLive));
                 break;
             case 3:
-                allParcels.add(new FragileParcel(description, weight, deliveryAddress, sendDay));
+                allTrackableParcels.add(new FragileParcel(description, weight, deliveryAddress, sendDay));
                 break;
             default:
                 System.out.println("Выбрали неверный тип посылки. Попробуйте ещё раз.");
@@ -84,6 +89,10 @@ public class DeliveryApp {
             parcel.packageItem();
             parcel.deliver();
         }
+        for (Trackable trackableParcel : allTrackableParcels) {
+            ((Parcel)trackableParcel).packageItem();
+            ((Parcel)trackableParcel).deliver();
+        }
     }
 
     private static void calculateCosts() {
@@ -91,7 +100,19 @@ public class DeliveryApp {
         for (Parcel parcel : allParcels) {
             sum += parcel.calculateDeliveryCost();
         }
+        for (Trackable trackableParcel : allTrackableParcels) {
+            sum += ((Parcel)trackableParcel).calculateDeliveryCost();
+        }
         System.out.println("Общая стоимость всех доставок: " + sum + ".");
+    }
+
+    private static void trackParcels() {
+        for (Trackable trackableParcel : allTrackableParcels) {
+            System.out.println("Введите новое местоположение для посылки "
+                    + ((Parcel) trackableParcel).getDescription() + ":");
+            String newLocation = scanner.nextLine();
+            trackableParcel.reportStatus(newLocation);
+        }
     }
 
 }
